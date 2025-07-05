@@ -30,10 +30,11 @@ export class AuthController {
 
     const isProduction = process.env.NODE_ENV === 'production'
 
+    // Intentar establecer cookie (puede que Railway la bloquee)
     res.cookie('jwt', token, {
       httpOnly: true,
       maxAge: 14400000, // 4 hours
-      secure: true, // Siempre true para production cross-origin
+      secure: true,
       sameSite: isProduction ? 'none' : 'lax',
       path: '/'
     })
@@ -43,7 +44,11 @@ export class AuthController {
     res.setHeader('X-Is-Secure', 'true')
     res.setHeader('X-Same-Site', isProduction ? 'none' : 'lax')
 
-    return { user: req.user }
+    // SOLUCIÓN ALTERNATIVA: Enviar token también en el response
+    return {
+      user: req.user,
+      token: token // ✅ Enviamos el token para que el frontend lo maneje
+    }
   }
 
   @UseGuards(JwtAuthGuard)
