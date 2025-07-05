@@ -33,9 +33,15 @@ export class AuthController {
     res.cookie('jwt', token, {
       httpOnly: true,
       maxAge: 14400000, // 4 hours
-      secure: isProduction,
-      sameSite: isProduction ? 'none' : 'lax'
+      secure: true, // Siempre true para production cross-origin
+      sameSite: isProduction ? 'none' : 'lax',
+      path: '/'
     })
+
+    // Debug headers
+    res.setHeader('X-Cookie-Debug', 'cookie-set')
+    res.setHeader('X-Is-Secure', 'true')
+    res.setHeader('X-Same-Site', isProduction ? 'none' : 'lax')
 
     return { user: req.user }
   }
@@ -56,8 +62,9 @@ export class AuthController {
 
     res.clearCookie('jwt', {
       httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? 'none' : 'lax'
+      secure: true, // Siempre true para production cross-origin
+      sameSite: isProduction ? 'none' : 'lax',
+      path: '/'
     })
     return { message: 'Logout successful' }
   }
