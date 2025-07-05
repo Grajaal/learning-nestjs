@@ -32,7 +32,7 @@ export class AuthController {
 
     res.cookie('jwt', token, {
       httpOnly: true,
-      maxAge: 3600000, // 1 hour
+      maxAge: 14400000, // 4 hours
       secure: isProduction,
       sameSite: isProduction ? 'none' : 'lax'
     })
