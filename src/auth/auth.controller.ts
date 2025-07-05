@@ -30,7 +30,7 @@ export class AuthController {
 
     const isProduction = process.env.NODE_ENV === 'production'
 
-    // Intentar establecer cookie (puede que Railway la bloquee)
+    // Intentar establecer cookie (fallback: token en response)
     res.cookie('jwt', token, {
       httpOnly: true,
       maxAge: 14400000, // 4 hours
@@ -39,15 +39,10 @@ export class AuthController {
       path: '/'
     })
 
-    // Debug headers
-    res.setHeader('X-Cookie-Debug', 'cookie-set')
-    res.setHeader('X-Is-Secure', 'true')
-    res.setHeader('X-Same-Site', isProduction ? 'none' : 'lax')
-
-    // SOLUCIÓN ALTERNATIVA: Enviar token también en el response
+    // Enviar token también en el response para compatibilidad
     return {
       user: req.user,
-      token: token // ✅ Enviamos el token para que el frontend lo maneje
+      token: token
     }
   }
 
